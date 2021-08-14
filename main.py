@@ -1,16 +1,15 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import requests
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+API_link = "https://api.telegram.org/bot1731536279:AAFAJ2f6CyZfindrLVuXc7bRA8bXTo4HY7Y"
 
+updates = requests.get(API_link + "/getUpdates?offset=-1").json()  #-1 значит, что мы берём последний update
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+print(updates)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+message = updates['result'][0]['message'] #берём сообщение из последнего update
+
+chat_id = message["chat"]["id"]
+text = message["text"]
+
+sent_message = requests.get(API_link + f"/sendMessage?chat_id={chat_id}&text=Ciri {text}")
