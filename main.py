@@ -1,15 +1,24 @@
-import requests
+import asyncio
+
+from aiogram import Bot, Dispatcher, executor  # Бот, доставщик объектов, запуск бота
+from config import BOT_TOKEN
+
+# Поток, в котором обрабатываются все события
+loop = asyncio.get_event_loop()
+bot = Bot(BOT_TOKEN, parse_mode="HTML")  # мод для форматирования
+dp = Dispatcher(bot, loop=loop)
+
+if __name__ == "__main__":
+    from handlers import dp, send_to_admin
+    # запуск бота, poling делает встроение запросы get update, запоминает offset, доставляет нам сообщения
+    executor.start_polling(dp, on_startup=send_to_admin) #на запуске бота запускаем функцию
 
 
-API_link = "https://api.telegram.org/bot1731536279:AAFAJ2f6CyZfindrLVuXc7bRA8bXTo4HY7Y"
+# для Markdown
+"__italic__"  # подчёркнутое сообщение
+"**bold**"  # жирное подчёркивание
 
-updates = requests.get(API_link + "/getUpdates?offset=-1").json()  #-1 значит, что мы берём последний update
+# для HTML
+# <i>italic</i>
+# <b>bold</b>
 
-print(updates)
-
-message = updates['result'][0]['message'] #берём сообщение из последнего update
-
-chat_id = message["chat"]["id"]
-text = message["text"]
-
-sent_message = requests.get(API_link + f"/sendMessage?chat_id={chat_id}&text=Ciri {text}")
